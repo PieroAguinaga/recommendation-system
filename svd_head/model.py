@@ -37,5 +37,7 @@ class MatrixFactorization(nn.Module):
         return self.user_emb(torch.LongTensor([user_idx]).to(DEVICE))
  
     def get_all_video_embeddings(self):
-        all_idx = torch.arange(N_VIDEOS).to(DEVICE)
-        return self.video_emb(all_idx)  # (N_VIDEOS, dim)
+        device = self.video_emb.weight.device
+        n_videos = self.video_emb.num_embeddings
+        all_idx = torch.arange(n_videos).to(device)
+        return self.video_emb(all_idx)
