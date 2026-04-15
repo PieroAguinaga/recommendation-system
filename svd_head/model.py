@@ -6,6 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 from pathlib import Path
 import os
 
+DEVICE        = "cuda" if torch.cuda.is_available() else "cpu"
 
 class MatrixFactorization(nn.Module):
     """
