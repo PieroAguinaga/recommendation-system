@@ -4,13 +4,15 @@ import torch
 import torch.nn as nn
 from pathlib import Path
 from sklearn.preprocessing import LabelEncoder
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader  
 from svd_head.model import MatrixFactorization
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 BASE    = Path(os.path.dirname(os.path.abspath(__file__))).parent
 OUT_DIR = BASE / "training_data"
 
+
+RANKER_BATCH = 4096
 DEVICE        = "cuda" if torch.cuda.is_available() else "cpu"
 EMBEDDING_DIM = 64   # must match what was used in train_mf.py
 
@@ -117,3 +119,23 @@ class RankerDataset(Dataset):
             self.num_feats[idx], self.cat_feats[idx],
             self.mf_score[idx],  self.labels[idx],
         )
+    
+# ── 7. Build DataLoaders ───────────────────────────────────────────────────────
+
+ranker_train_loader = DataLoader(
+    RankerDataset(ranker_train),
+    batch_size=RANKER_BATCH,
+    shuffle=True,
+    num_workers=2 if DEVICE == 'cuda' else 0,
+    pin_memory=(DEVICE == 'cuda'),
+)
+ranker_val_loader = DataLoader(
+    RankerDataset(ranker_test),
+    batch_size=RANKER_BATCH * 2,
+    shuffle=False,
+    num_workers=2 if DEVICE == 'cuda' else 0,
+    pin_memory=(DEVICE == 'cuda'),
+)
+
+print(f'\nTrain batches per epoch : {len(ranker_train_loader):,}')
+print(f'Val   batches per epoch : {len(ranker_val_loader):,}')
