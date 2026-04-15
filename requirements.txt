@@ -1,4 +1,6 @@
 gdown
 huggingface_hub
 pandas
-torch
+torchl
+ightgbm 
+scikit-learn
