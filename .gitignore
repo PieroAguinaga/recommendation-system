@@ -2,3 +2,5 @@ venv/
 .env
 KuaiRand-Pure.tar.gz
 kuairand/
+training_data/
+__pycache__
