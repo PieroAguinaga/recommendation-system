@@ -5,3 +5,4 @@ torch
 lightgbm 
 scikit-learn
 numpy
+pandas
